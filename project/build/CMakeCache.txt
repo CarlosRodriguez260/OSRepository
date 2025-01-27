@@ -149,7 +149,7 @@ CMAKE_PROJECT_DESCRIPTION:STATIC=
 CMAKE_PROJECT_HOMEPAGE_URL:STATIC=
 
 //Value Computed by CMake
-CMAKE_PROJECT_NAME:STATIC=HelloWorld
+CMAKE_PROJECT_NAME:STATIC=CosineSeries
 
 //Path to a program.
 CMAKE_RANLIB:FILEPATH=/usr/bin/ranlib
@@ -217,13 +217,13 @@ CMAKE_TAPI:FILEPATH=CMAKE_TAPI-NOTFOUND
 CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
 
 //Value Computed by CMake
-HelloWorld_BINARY_DIR:STATIC=/home/vmboxuser/Documents/OSRepository/project/build
+CosineSeries_BINARY_DIR:STATIC=/home/vmboxuser/Documents/OSRepository/project/build
 
 //Value Computed by CMake
-HelloWorld_IS_TOP_LEVEL:STATIC=ON
+CosineSeries_IS_TOP_LEVEL:STATIC=ON
 
 //Value Computed by CMake
-HelloWorld_SOURCE_DIR:STATIC=/home/vmboxuser/Documents/OSRepository/project
+CosineSeries_SOURCE_DIR:STATIC=/home/vmboxuser/Documents/OSRepository/project
 
 
 ########################

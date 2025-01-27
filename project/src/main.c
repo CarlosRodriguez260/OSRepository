@@ -1,6 +1,9 @@
-#include "hello.h"
+#include "cosineSeries.h"
+
 int main() 
 {
-  PrintHelloWorld();
+  CosineSeries(4,23); // Returns -1
+  printf("\n");
+  CosineSeries(1,1); // Returns 1
   return 0;
 }

@@ -8,8 +8,8 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/vmboxuser/Documents/OSRepository/project/src/hello.c" "CMakeFiles/hello_world.dir/src/hello.c.o" "gcc" "CMakeFiles/hello_world.dir/src/hello.c.o.d"
-  "/home/vmboxuser/Documents/OSRepository/project/src/main.c" "CMakeFiles/hello_world.dir/src/main.c.o" "gcc" "CMakeFiles/hello_world.dir/src/main.c.o.d"
+  "/home/vmboxuser/Documents/OSRepository/project/src/cosineSeries.c" "CMakeFiles/cosine_series.dir/src/cosineSeries.c.o" "gcc" "CMakeFiles/cosine_series.dir/src/cosineSeries.c.o.d"
+  "/home/vmboxuser/Documents/OSRepository/project/src/main.c" "CMakeFiles/cosine_series.dir/src/main.c.o" "gcc" "CMakeFiles/cosine_series.dir/src/main.c.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

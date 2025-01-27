@@ -117,48 +117,48 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named hello_world
+# Target rules for targets named cosine_series
 
 # Build rule for target.
-hello_world: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 hello_world
-.PHONY : hello_world
+cosine_series: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 cosine_series
+.PHONY : cosine_series
 
 # fast build rule for target.
-hello_world/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hello_world.dir/build.make CMakeFiles/hello_world.dir/build
-.PHONY : hello_world/fast
+cosine_series/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/cosine_series.dir/build.make CMakeFiles/cosine_series.dir/build
+.PHONY : cosine_series/fast
 
-src/hello.o: src/hello.c.o
-.PHONY : src/hello.o
+src/cosineSeries.o: src/cosineSeries.c.o
+.PHONY : src/cosineSeries.o
 
 # target to build an object file
-src/hello.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hello_world.dir/build.make CMakeFiles/hello_world.dir/src/hello.c.o
-.PHONY : src/hello.c.o
+src/cosineSeries.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/cosine_series.dir/build.make CMakeFiles/cosine_series.dir/src/cosineSeries.c.o
+.PHONY : src/cosineSeries.c.o
 
-src/hello.i: src/hello.c.i
-.PHONY : src/hello.i
+src/cosineSeries.i: src/cosineSeries.c.i
+.PHONY : src/cosineSeries.i
 
 # target to preprocess a source file
-src/hello.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hello_world.dir/build.make CMakeFiles/hello_world.dir/src/hello.c.i
-.PHONY : src/hello.c.i
+src/cosineSeries.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/cosine_series.dir/build.make CMakeFiles/cosine_series.dir/src/cosineSeries.c.i
+.PHONY : src/cosineSeries.c.i
 
-src/hello.s: src/hello.c.s
-.PHONY : src/hello.s
+src/cosineSeries.s: src/cosineSeries.c.s
+.PHONY : src/cosineSeries.s
 
 # target to generate assembly for a file
-src/hello.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hello_world.dir/build.make CMakeFiles/hello_world.dir/src/hello.c.s
-.PHONY : src/hello.c.s
+src/cosineSeries.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/cosine_series.dir/build.make CMakeFiles/cosine_series.dir/src/cosineSeries.c.s
+.PHONY : src/cosineSeries.c.s
 
 src/main.o: src/main.c.o
 .PHONY : src/main.o
 
 # target to build an object file
 src/main.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hello_world.dir/build.make CMakeFiles/hello_world.dir/src/main.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/cosine_series.dir/build.make CMakeFiles/cosine_series.dir/src/main.c.o
 .PHONY : src/main.c.o
 
 src/main.i: src/main.c.i
@@ -166,7 +166,7 @@ src/main.i: src/main.c.i
 
 # target to preprocess a source file
 src/main.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hello_world.dir/build.make CMakeFiles/hello_world.dir/src/main.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/cosine_series.dir/build.make CMakeFiles/cosine_series.dir/src/main.c.i
 .PHONY : src/main.c.i
 
 src/main.s: src/main.c.s
@@ -174,7 +174,7 @@ src/main.s: src/main.c.s
 
 # target to generate assembly for a file
 src/main.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hello_world.dir/build.make CMakeFiles/hello_world.dir/src/main.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/cosine_series.dir/build.make CMakeFiles/cosine_series.dir/src/main.c.s
 .PHONY : src/main.c.s
 
 # Help Target
@@ -185,10 +185,10 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... hello_world"
-	@echo "... src/hello.o"
-	@echo "... src/hello.i"
-	@echo "... src/hello.s"
+	@echo "... cosine_series"
+	@echo "... src/cosineSeries.o"
+	@echo "... src/cosineSeries.i"
+	@echo "... src/cosineSeries.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
