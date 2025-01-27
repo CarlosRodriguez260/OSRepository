@@ -1,0 +1,1 @@
+/usr/bin/cc CMakeFiles/cosine_series.dir/src/main.c.o CMakeFiles/cosine_series.dir/src/cosineSeries.c.o -o cosine_series  -lm 
