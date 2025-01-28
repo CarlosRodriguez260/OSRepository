@@ -16,4 +16,4 @@ src/main.c
 src/FillDate.c)
 
 # Add any libraries
-target_link_libraries(fill_date m)
+# target_link_libraries(fill_date m)

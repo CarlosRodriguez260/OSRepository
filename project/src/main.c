@@ -10,5 +10,6 @@ int main(){
     FillDate(36756000,1,1,1974); // Prints "February 28, 1971"
     FillDate(1702944000,1,1,1970); // Prints "January 1, 2024"
     FillDate(1708164000,1,1,1970); // Prints "February 29, 2024"
+    FillDate(2678400,1,1,1970); // Prints "January 31, 1970"
     return 0;
 }
