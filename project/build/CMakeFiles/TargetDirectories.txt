@@ -1,0 +1,3 @@
+/home/vmboxuser/Documents/OSRepository/project/build/CMakeFiles/fill_date.dir
+/home/vmboxuser/Documents/OSRepository/project/build/CMakeFiles/edit_cache.dir
+/home/vmboxuser/Documents/OSRepository/project/build/CMakeFiles/rebuild_cache.dir
