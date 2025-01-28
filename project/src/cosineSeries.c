@@ -22,12 +22,12 @@ int CosineSeries(int init_number, int end_number) {
     printf("The result is %lf\n",result);
     if(result < 0)
     {
-        printf("Hence we print -1");
+        printf("Hence we print -1 \n");
         return -1;
     }
     else if(result >= 0)
     {
-        printf("Hence we print 1");
+        printf("Hence we print 1 \n");
         return 1;
     }
 }
