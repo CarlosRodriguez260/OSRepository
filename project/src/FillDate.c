@@ -6,131 +6,93 @@
  *        into a human-readable date (Month, Day, Year).
  *
  * This function calculates the equivalent date (Month, Day, Year) 
- * for a given number of seconds since January 1, 1970. It assumes:
- *  - 1 year = 31,536,000 seconds
- *  - 1 month = 2,678,400 seconds
- *  - 1 day = 86,400 seconds
+ * for a given number of seconds since January 1, 1970.
  * 
  * @param second The number of seconds since January 1, 1970.
  * @param day Pointer to an integer that stores the initial value of the first day. Value is always equal to 1.
  * @param month Pointer to an integer that stores the initial value representing the first month, January. Value is always equal to 1.
  * @param year Pointer to an integer that stores the computed year.
- * @return The appropiate date after adding the seconds in format of (Month Day, Year) 
+ * @return The appropriate date after adding the seconds in format of (Month Day, Year) 
  *  - (NOTE: Not an actual return, the date is printed).
 */
 
 void FillDate(long second, int* day, int* month, int* year){
-    // day = 1
-    // month = 1
-    // year = 1970
+    // Initial values
+    int day1 = *day;
+    int month1 = *month;
+    int year1 = *year;
 
-    // 1 year = 31,536,000 seconds (1 year = 86,400 * 365)
-    // 1 month = 2,678,400 seconds (1 month = 86,400 * 31)
-    // 1 day = 86,400 second
-
-    // Dereferencing values of pointers
-    int day1 = *(&day);
-    int month1 = *(&month);
-    int year1 = *(&year);
-    int leap_day = 0;
+    // Array to store the number of days in each month
+    int daysInMonth[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
     // If we don't exceed a day worth of seconds, return the original date
-    if(second<86400){printf("January 1,1970"); printf("\n"); return;}
-
-    // If the seconds are bigger than a year, add to the year1 variable
-    while(second>=31536000){
-
-        //If a leap year occurs, count the extra day inside the "leap_day" variable
-        if((year1%4==0 && year1%100!=0) || year1%400==0){
-            leap_day++;
-        }
-        year1++;
-        second = second - 31536000;
+    if(second < 86400){
+        printf("January 1, 1970\n");
+        return;
     }
-    // If the seconds are bigger than a month but smaller than a year, add to the month1 variable
-    while(second>=2678401){
+
+    // Calculate the number of years
+    while(second >= 31536000){
+        // Check if the current year is a leap year
+        if((year1 % 4 == 0 && year1 % 100 != 0) || year1 % 400 == 0){
+            if(second >= 31622400){ // Leap year has 366 days
+                second -= 31622400;
+                year1++;
+            } else {
+                break;
+            }
+        } else {
+            second -= 31536000; // Non-leap year has 365 days
+            year1++;
+        }
+    }
+
+    // Calculate the number of months
+    while(second >= 86400){
+        // Check if the current year is a leap year to adjust February days
+        if((year1 % 4 == 0 && year1 % 100 != 0) || year1 % 400 == 0){
+            daysInMonth[1] = 29;
+        } else {
+            daysInMonth[1] = 28;
+        }
+
+        // Calculate the number of days in the current month
+        int daysInCurrentMonth = daysInMonth[month1 - 1];
+
+        if(second >= daysInCurrentMonth * 86400){
+            second -= daysInCurrentMonth * 86400;
+            month1++;
+            if(month1 > 12){
+                month1 = 1;
+                year1++;
+            }
+        } else {
+            break;
+        }
+    }
+
+    // Calculate the number of days
+    day1 += second / 86400;
+    second %= 86400;
+
+    // Adjust the day if it exceeds the number of days in the current month
+    if((year1 % 4 == 0 && year1 % 100 != 0) || year1 % 400 == 0){
+        daysInMonth[1] = 29;
+    } else {
+        daysInMonth[1] = 28;
+    }
+
+    if(day1 > daysInMonth[month1 - 1]){
+        day1 -= daysInMonth[month1 - 1];
         month1++;
-        second = second - 2678401;
-    }
-    // If the seconds are bigger than a day but smaller than a month, add to the day1 variable
-    while(second>=86400)
-    {
-        // Depending on the month, we allow the days to go up to either 30 or 31 
-        if(month1==1,3,5,7,8,10,12){
-            if(day1>=31){
-                day1 = 31;
-            }
-            else{
-                day1++;
-            }
-        }
-        else{
-            if(day1>=30){
-                day1 = 30;
-            }
-            else{
-                day1++;
-            }
-        }
-        second = second - 86400;
-    }
-
-    //If leap years happened, we readjust the final date accordingly
-    if(leap_day>0){
-        while(leap_day>0){
-            if(day1==1){
-                if(month1==1){
-                    year1--;
-                    month1 = 12;
-                    day1 = 31;
-                    continue;
-                }
-
-                if(month1==3,5,7,8,10,12){
-                    month1--;
-                    day1=31;
-                }
-                else if(month1==2){
-                    if((year1%4==0 && year1%100!=0) || year1%400==0){
-                        month1--;
-                        day1=29;
-                    }
-                    else{
-                        month1--;
-                        day1=28;
-                    }
-                }
-                else{
-                    month1--;
-                    day1=30;
-                }
-            }
-            else{
-                day1--;
-            }
-            leap_day--;
+        if(month1 > 12){
+            month1 = 1;
+            year1++;
         }
     }
 
     // Different print scenarios depending on the month
-    if(month1==1){printf("January %d,%d\n",day1,year1);}
-    if(month1==2){
-        if(day1>=29 && ((year1%4==0 && year1%100!=0) || year1%400==0)){
-            day1=29;
-        } // For leap years
-        else if(day1>=28 && (year1%4!=0 || year1%100==0)){
-            day1=28;
-        } // For non-leap years
-        printf("February %d,%d\n",day1,year1);
-    }
-    if(month1==3){printf("March %d,%d\n",day1,year1);}
-    if(month1==4){printf("April%d,%d\n",day1,year1);}
-    if(month1==5){printf("May %d,%d\n",day1,year1);}
-    if(month1==6){printf("June %d,%d\n",day1,year1);}
-    if(month1==7){printf("July %d,%d\n",day1,year1);}
-    if(month1==8){printf("August %d,%d\n",day1,year1);}
-    if(month1==9){printf("September %d,%d\n",day1,year1);}
-    if(month1==10){printf("October %d,%d\n",day1,year1);}
-    if(month1==11){printf("November %d,%d\n",day1,year1);}
-    if(month1==12){printf("December %d,%d\n",day1,year1);}
+    const char* months[] = {"January", "February", "March", "April", "May", "June", 
+                            "July", "August", "September", "October", "November", "December"};
+    printf("%s %d, %d\n", months[month1 - 1], day1, year1);
 }

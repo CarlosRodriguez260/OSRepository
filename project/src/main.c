@@ -1,21 +1,27 @@
 #include "FillDate.h"
+#include <time.h>
 
 int main(){
-    int* year = 1970;
-    int* day = 1;
-    int* month = 1;
+    int year = 1970;
+    int day = 1;
+    int month = 1;
+    int * yPtr = &year;
+    int * dPtr = &day;
+    int * mPtr = &month;
+
     int second1;
     int second2;
     int second3;
 
-    printf("");
-    scanf("%d %d %d \n", &second1, &second2, &second3);
-    FillDate(second1, day, month, year);
-    FillDate(second2, day, month, year);
-    FillDate(second3, day, month, year);
+    scanf("%d %d %d", &second1, &second2, &second3);
+    printf("Here are your dates:\n");
+    FillDate(second1, dPtr, mPtr, yPtr);
+    FillDate(second2, dPtr, mPtr, yPtr);
+    FillDate(second3, dPtr, mPtr, yPtr);
 
     // NOTE: Test cases were checked with https://www.epochconverter.com/
     //       to ensure compliance with leap years and other constraints.
+    //
     // FillDate(360000,day,month,year); // Prints "January 5, 1970"
     // FillDate(0,day,month,year); // Prints "January 1, 1970"
     // FillDate(2628000,day,month,year); // Prints "January 31, 1970"
@@ -26,6 +32,6 @@ int main(){
     // FillDate(1708164000,day,month,year); // Prints "February 17, 2024"
     // FillDate(2678400,day,month,year); // Prints "January 31, 1970"
     // FillDate(946699200,day,month,year); // Prints "January 1, 2000"
-    FillDate(298313721,day,month,year); // Prints "February 29,2024"
+    // FillDate(298313721,dPtr,mPtr,yPtr); // June 14, 1979
     return 0;
 }
