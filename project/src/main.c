@@ -54,6 +54,8 @@ int main()
     }
     PrintArray(arr, type);
   } // float, rounded to 3 decimal spaces
-
+  else{
+    printf("Invalid Entry! \n");
+  }
   return 0;
 }
