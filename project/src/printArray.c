@@ -3,17 +3,54 @@
 #include <stdio.h>
 
 /**
- * @brief Calculates the sum of cosines for a range of integers and evaluates the result.
+ * @brief receives an array and prints them differently according to the second argument(1: char, 2: integer, 3: float). 
+ *          If the array must be printed in a char way, the function must use the function puts() as a character string. 
+ *          In case the array is to be printed in an integer way, the numbers are separated by commas until it reaches a negative number. 
+ *          In case the array must be printed in a float way, each number is printed with three decimal digits and 
+ *          separated by semicolons until it reaches a negative number.
  * 
- * The function is in charge of calculating the sum of the cosine values for all integers in the 
- * inclusive range specified by the parameters 'init_number' and 'end_number'. A result is printed
- * to the console, which reflects what the function returns.
  * 
- * @param init_number Starting number of the range
- * @param end_number End number of the range
- * @return -1 if result is negative, otherwise return 1
+ * 
+ * @param array Pointer that can point to either a char, array of type int or array of type float
+ * @param type Distinguishes the type (1 = char, 2 = int, 3 = float)
+ * @return Prints out the char or array accordingly
  */
 
 void PrintArray(void* array, int type){
+    if(type==1){
+        char* result = (char*)array;
+        puts(result);
+    } // char
+    else if(type==2){
+        int size = sizeof((int*)array);
 
+        for(int i = 0; i<size; i++){
+            int val = *((int*)array + i);
+            if(val==0){
+                break;
+            }
+            else{
+                if(i!=0){
+                    printf(",");
+                }
+            }
+            printf("%d", val);
+        }
+    } // integer
+    else{
+        int size = sizeof((float*)array);
+
+        for(int i = 0; i<size; i++){
+            float val = *((float*)array + i);
+            if(val<=0.00000000 || isnan(val)){
+                break;
+            }
+            else{
+                if(i!=0){
+                    printf(",");
+                }
+            }
+            printf("%f", val);
+        }
+    } // float, rounded to 3 decimal spaces
 }
