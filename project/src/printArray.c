@@ -1,4 +1,4 @@
-#include "cosineSeries.h"
+#include "printArray.h"
 #include "math.h"
 #include <stdio.h>
 
@@ -14,20 +14,6 @@
  * @return -1 if result is negative, otherwise return 1
  */
 
-int CosineSeries(int init_number, int end_number) { 
-    double result = 0;
-    for(int i = init_number; i<=end_number; i++) {
-        result = result + cos(i);
-    }
-    printf("The result is %lf\n",result);
-    if(result < 0)
-    {
-        printf("Hence we print -1 \n");
-        return -1;
-    }
-    else if(result >= 0)
-    {
-        printf("Hence we print 1 \n");
-        return 1;
-    }
+void PrintArray(void* array, int type){
+
 }
