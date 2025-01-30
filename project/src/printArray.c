@@ -18,28 +18,26 @@
 
 void PrintArray(void* array, int type){
     if(type==1){
-        char* result = (char*)array;
+        char * result = (char*)array;
         puts(result);
     } // char
     else if(type==2){
-        int size = sizeof((int*)array);
-
+        int size = 500;
         for(int i = 0; i<size; i++){
             int val = *((int*)array + i);
-            if(val==0){
+            if(val<=0){
                 break;
             }
             else{
                 if(i!=0){
-                    printf(",");
+                    printf(":");
                 }
             }
             printf("%d", val);
         }
     } // integer
     else{
-        int size = sizeof((float*)array);
-
+        int size = 500;
         for(int i = 0; i<size; i++){
             float val = *((float*)array + i);
             if(val<=0.00000000 || isnan(val)){
@@ -47,7 +45,7 @@ void PrintArray(void* array, int type){
             }
             else{
                 if(i!=0){
-                    printf(",");
+                    printf(";");
                 }
             }
             printf("%f", val);

@@ -21,7 +21,7 @@ int main()
     PrintArray(cPtr,type);
   } // char
   else if(type==2){
-    int arr[50];
+    int arr[500];
     bool stop = false;
     int index = 0;
     while(!stop){
@@ -38,7 +38,7 @@ int main()
     PrintArray(arr, type);
   } // integer
   else if(type==3){
-    float arr[50];
+    float arr[500];
     bool stop = false;
     int index = 0;
     while(!stop){
