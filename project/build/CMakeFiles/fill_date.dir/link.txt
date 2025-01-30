@@ -1,1 +1,0 @@
-/usr/bin/cc CMakeFiles/fill_date.dir/src/main.c.o CMakeFiles/fill_date.dir/src/FillDate.c.o -o fill_date 

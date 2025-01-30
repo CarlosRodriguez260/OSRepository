@@ -13,6 +13,7 @@ int main(){
     int second2;
     int second3;
 
+    printf("Please enter 3 inputs of seconds \n");
     scanf("%d %d %d", &second1, &second2, &second3);
     printf("Here are your dates:\n");
     FillDate(second1, dPtr, mPtr, yPtr);
