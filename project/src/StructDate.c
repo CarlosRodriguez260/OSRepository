@@ -1,4 +1,4 @@
-#include "FillDate.h"
+#include "StructDate.h"
 #include <stdio.h>
 
 /**
@@ -16,11 +16,13 @@
  *  - (NOTE: Not an actual return, the date is printed).
 */
 
-void FillDate(long second, int* day, int* month, int* year){
+struct date FillDate(long second){
     // Initial values
-    int day1 = *day;
-    int month1 = *month;
-    int year1 = *year;
+    struct date defaultVar = {1, 1, 1970};
+
+    int day1 = defaultVar.day;
+    int month1 = defaultVar.month;
+    int year1 = defaultVar.year;
 
     // Array to store the number of days in each month
     int daysInMonth[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
@@ -95,4 +97,5 @@ void FillDate(long second, int* day, int* month, int* year){
     const char* months[] = {"January", "February", "March", "April", "May", "June", 
                             "July", "August", "September", "October", "November", "December"};
     printf("%s %d, %d\n", months[month1 - 1], day1, year1);
+    return defaultVar;
 }

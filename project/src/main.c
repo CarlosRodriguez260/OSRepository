@@ -1,14 +1,7 @@
-#include "FillDate.h"
+#include "StructDate.h"
 #include <time.h>
 
 int main(){
-    int year = 1970;
-    int day = 1;
-    int month = 1;
-    int * yPtr = &year;
-    int * dPtr = &day;
-    int * mPtr = &month;
-
     int second1;
     int second2;
     int second3;
@@ -16,9 +9,9 @@ int main(){
     printf("Please enter 3 inputs of seconds \n");
     scanf("%d %d %d", &second1, &second2, &second3);
     printf("Here are your dates:\n");
-    FillDate(second1, dPtr, mPtr, yPtr);
-    FillDate(second2, dPtr, mPtr, yPtr);
-    FillDate(second3, dPtr, mPtr, yPtr);
+    struct date result1 = FillDate(second1);
+    struct date result2 = FillDate(second2);
+    struct date result3 = FillDate(second3);
 
     // NOTE: Test cases were checked with https://www.epochconverter.com/
     //       to ensure compliance with leap years and other constraints.
