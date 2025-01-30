@@ -16,6 +16,7 @@
  *  - (NOTE: Not an actual return, the date is printed).
 */
 
+/// @brief 
 struct date FillDate(long second){
     // Initial values
     struct date defaultVar = {1, 1, 1970};
@@ -93,9 +94,17 @@ struct date FillDate(long second){
         }
     }
 
+    // Update values in struct
+    defaultVar.day = day1;
+    defaultVar.month = month1;
+    defaultVar.year = year1;
+
     // Different print scenarios depending on the month
     const char* months[] = {"January", "February", "March", "April", "May", "June", 
                             "July", "August", "September", "October", "November", "December"};
-    printf("%s %d, %d\n", months[month1 - 1], day1, year1);
+
+    // Here we confirm that the updated values went into the struct we return. 
+    printf("%s %d, %d\n", months[defaultVar.month - 1], defaultVar.day, defaultVar.year);
+
     return defaultVar;
 }

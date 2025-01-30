@@ -26,6 +26,6 @@ int main(){
     // FillDate(1708164000,day,month,year); // Prints "February 17, 2024"
     // FillDate(2678400,day,month,year); // Prints "January 31, 1970"
     // FillDate(946699200,day,month,year); // Prints "January 1, 2000"
-    // FillDate(298313721,dPtr,mPtr,yPtr); // June 14, 1979
+    // FillDate(298313721,dPtr,mPtr,yPtr); // June 15, 1979
     return 0;
 }
