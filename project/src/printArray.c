@@ -19,6 +19,7 @@
 void PrintArray(void* array, int type){
     if(type==1){
         char * result = (char*)array;
+        printf("Your string was: ");
         puts(result);
     } // char
     else if(type==2){
@@ -48,7 +49,7 @@ void PrintArray(void* array, int type){
                     printf(";");
                 }
             }
-            printf("%f", val);
+            printf("%.3f", val);
         }
     } // float, rounded to 3 decimal spaces
 }
