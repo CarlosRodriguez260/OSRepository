@@ -16,6 +16,6 @@
  * @return Prints out the char or array accordingly
  */
 
-void PrintArray(char * base, char * mod){
-    
+void UpperRand(char * base, char * mod){
+
 }
