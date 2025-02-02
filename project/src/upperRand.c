@@ -1,21 +1,30 @@
 #include "header.h"
-#include "math.h"
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <ctype.h>
 
 /**
- * @brief receives an array and prints them differently according to the second argument(1: char, 2: integer, 3: float). 
- *          If the array must be printed in a char way, the function must use the function puts() as a character string. 
- *          In case the array is to be printed in an integer way, the numbers are separated by commas until it reaches a negative number. 
- *          In case the array must be printed in a float way, each number is printed with three decimal digits and 
- *          separated by semicolons until it reaches a negative number.
+ * @brief Receives a pointer "base" that points to a char array filled with certain characters. We then
+ *        iterate through this char array and randomly choose to uppercase them. This modified char array
+ *        gets passed to the pointer of "mod", which points to another char array.
  * 
  * 
  * 
- * @param array Pointer that can point to either a char, array of type int or array of type float
- * @param type Distinguishes the type (1 = char, 2 = int, 3 = float)
- * @return Prints out the char or array accordingly
+ * @param base Points to the unmodified character array
+ * @param mod Points to where we still store the modified char array
+ * @return Nothing, only modifies the values pointed to by the parameters
  */
 
 void UpperRand(char * base, char * mod){
-
+    int random;
+    for(int i = 0; base[i] != '\0'; i++){
+        char temp = base[i];
+        random = rand();
+        // We only uppercase the letter if the random number is divisible by 2
+        if(random%2==0){
+            temp = toupper(base[i]);
+        }
+        mod[i] = temp;
+    }
 }
