@@ -1,7 +1,0 @@
-[
-{
-  "directory": "/home/juan/Documents/class_examples/2025-S/made_in_class/fork_intro/build",
-  "command": "/usr/bin/cc   -g -o CMakeFiles/fork_intro.dir/src/main.c.o -c /home/juan/Documents/class_examples/2025-S/made_in_class/fork_intro/src/main.c",
-  "file": "/home/juan/Documents/class_examples/2025-S/made_in_class/fork_intro/src/main.c"
-}
-]
