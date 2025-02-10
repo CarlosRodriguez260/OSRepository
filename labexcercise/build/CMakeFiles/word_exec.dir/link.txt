@@ -1,0 +1,1 @@
+/usr/bin/cc CMakeFiles/word_exec.dir/src/main.c.o -o word_exec 

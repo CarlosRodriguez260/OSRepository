@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "dirent.h": "c",
+        "string.h": "c"
+    },
+    "cmake.sourceDirectory": "/home/vmboxuser/Documents/OSRepository/project"
+}
