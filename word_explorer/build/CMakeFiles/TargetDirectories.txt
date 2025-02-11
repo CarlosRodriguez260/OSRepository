@@ -1,3 +1,0 @@
-/home/vmboxuser/Documents/OSRepository/word_explorer/build/CMakeFiles/word_explorer.dir
-/home/vmboxuser/Documents/OSRepository/word_explorer/build/CMakeFiles/edit_cache.dir
-/home/vmboxuser/Documents/OSRepository/word_explorer/build/CMakeFiles/rebuild_cache.dir

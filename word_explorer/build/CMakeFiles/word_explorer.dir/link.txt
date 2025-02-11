@@ -1,1 +1,0 @@
-/usr/bin/cc CMakeFiles/word_explorer.dir/src/word_explorer.c.o CMakeFiles/word_explorer.dir/src/explore_directory.c.o CMakeFiles/word_explorer.dir/src/contains_word.c.o -o word_explorer 

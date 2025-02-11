@@ -1,3 +1,0 @@
-/home/vmboxuser/Documents/OSRepository/labexcercise/build/CMakeFiles/word_exec.dir
-/home/vmboxuser/Documents/OSRepository/labexcercise/build/CMakeFiles/edit_cache.dir
-/home/vmboxuser/Documents/OSRepository/labexcercise/build/CMakeFiles/rebuild_cache.dir
