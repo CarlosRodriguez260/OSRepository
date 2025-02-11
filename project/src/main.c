@@ -8,7 +8,7 @@
 int main() 
 {
   mqd_t queue1;
-  queue1 = mq_open("/queue1", O_WRONLY, O_CREAT, 0664, NULL);
+  queue1 = mq_open("/queue1", O_WRONLY, O_CREAT, 0644, NULL);
 
   mqd_t queue2;
   queue2 = mq_open("/queue2", O_RDWR);
