@@ -19,6 +19,11 @@
  * @note The "word_explorer" program must be built and located in the specified
  * directory
  *       ("../../word_explorer/build/") for this program to work correctly.
+ * 
+ * @note The default directory path to test inputs is "../test_files". 
+ * This assumes that you launch this program in the "build" folder of 
+ * "labexcercise", and changing the location of where you launch the 
+ * program affects this trayectory
  *
  * @warning If the "word_explorer" program is not found or cannot be executed,
  * the child process will terminate without any indication of failure to the
