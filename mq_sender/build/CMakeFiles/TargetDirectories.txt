@@ -1,0 +1,3 @@
+/home/juan/Documents/OS/class_examples/complete_examples/ipc/mq_sender/build/CMakeFiles/mq_sender.dir
+/home/juan/Documents/OS/class_examples/complete_examples/ipc/mq_sender/build/CMakeFiles/edit_cache.dir
+/home/juan/Documents/OS/class_examples/complete_examples/ipc/mq_sender/build/CMakeFiles/rebuild_cache.dir

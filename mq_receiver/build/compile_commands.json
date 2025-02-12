@@ -1,0 +1,8 @@
+[
+{
+  "directory": "/home/juan/Documents/OS/class_examples/complete_examples/ipc/mq_receiver/build",
+  "command": "/usr/bin/cc   -g -o CMakeFiles/mq_receiver.dir/src/main.c.o -c /home/juan/Documents/OS/class_examples/complete_examples/ipc/mq_receiver/src/main.c",
+  "file": "/home/juan/Documents/OS/class_examples/complete_examples/ipc/mq_receiver/src/main.c",
+  "output": "CMakeFiles/mq_receiver.dir/src/main.c.o"
+}
+]
