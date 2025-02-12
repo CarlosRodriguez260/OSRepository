@@ -1,8 +1,0 @@
-[
-{
-  "directory": "/home/juan/Documents/OS/class_examples/complete_examples/ipc/mq_sender/build",
-  "command": "/usr/bin/cc   -g -o CMakeFiles/mq_sender.dir/src/main.c.o -c /home/juan/Documents/OS/class_examples/complete_examples/ipc/mq_sender/src/main.c",
-  "file": "/home/juan/Documents/OS/class_examples/complete_examples/ipc/mq_sender/src/main.c",
-  "output": "CMakeFiles/mq_sender.dir/src/main.c.o"
-}
-]
