@@ -5,13 +5,13 @@ set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -DDEBUG")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG -s")
 
 # Set the project name
-project(Synchronizer)
+project(processB)
 
 # Include the current directory for header files
 include_directories(include)
 
 # Add the executable
-add_executable(synchronizer
+add_executable(process_b
 src/main.c)
 
 # Add any libraries
