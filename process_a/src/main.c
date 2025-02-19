@@ -90,7 +90,7 @@ int main(){
         }
 
         if(i==199){
-            printf("%d. ", memory_ptr[i]);
+            printf("%d.\n", memory_ptr[i]);
         }
         else{
             printf("%d,", memory_ptr[i]);
