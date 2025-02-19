@@ -9,117 +9,66 @@
 
 // Global Variables
 #define SHM_NAME "/memory"
-#define SHM_SIZE 1000 * sizeof(float)
-int COUNT = 0;
+#define SHM_SIZE 200 * sizeof(int)
+#define SEMNAME_1 "/sem1"
+#define SEMNAME_2 "/sem2"
 float * MEMORY_PTR = NULL;
 
-// Function for handling SIGUSR1 signal
-void handle_new(int sig) { 
-    if(COUNT==1000){
-        printf("Memory is full! \n");
-    }
-    else{
-        if(COUNT==0){
-            MEMORY_PTR[COUNT] = 1;
-        }
-        else{
-            if(MEMORY_PTR[COUNT]!=0){
-                COUNT++;
-            }
-            MEMORY_PTR[COUNT] = MEMORY_PTR[COUNT-1]*2;
-        }
-        COUNT++;
-    }
-}
-
-// Function for handling SIGUSR2 signal
-void handle_delete(int sig) { 
-    if(COUNT==0){
-        MEMORY_PTR[COUNT] = 0;
-    }
-    else{
-        if(MEMORY_PTR[COUNT]==0){
-            COUNT--;
-        }
-        MEMORY_PTR[COUNT] = 0;
-    }
-}
-
-// Function for handling SIGALRM signal
-void handle_divide(int sig) { 
-    for(int i = 0; i<=COUNT; i++){
-        MEMORY_PTR[i] = MEMORY_PTR[i]/2;
-    }
-}
-
-// Function for handling SIGINT signal
-void handle_stop(int sig){
-    munmap(MEMORY_PTR, SHM_SIZE);
-    shm_unlink(SHM_NAME);
-    kill(getpid(), SIGTERM);
-}
-
 /**
- * @brief Connects to the shared memory created by "program_a", and
- * depending on the signals it receives from said program will execute
- * certain actions on the shared memory.
+ * @name Process B
  * 
- * This program runs indefinitely until it receives the
- * appropiate signal for stopping. The parent, "program_a", 
- * is in charge of sending signals to this one, and here is 
- * what they mean here:
+ * @brief Subscribes to a shared memory of 200 integers, which program A
+ * will initiate. Afterwards, we use semaphores between the programs to
+ * increment the values of the memory by 1 in each program, five thousand times.
+ * In other words, the programs will interchangeably increment all values in memory
+ * by one 5000 times, and at the end all values of the memory should be equal to 10000.
  * 
- * SIGUSR1: Adds a new number to the shared memory.
- *          Every new number is multiplied by 2.
- * SIGUSR2: Removes a number from the shared memory.
- * SIGALRM: Divides all numbers in the shared memory
- *          by 2.
- * SIGINT: Makes this program stop while cleaning
- *         out and unlinking the memory. The parent will 
- *         stop right after this as well.
+ * @example
+ * - Process A will begin incrementing while B waits, and afterwards Process A will wait 
+ *   for Process B to increment. This will keep happening until both procceses incremented
+ *   the values of the memory by 5000.
  * 
- * Each of these signals have an appropiate handler function
- * designed to execute the instructions specified above.
- * 
- * @note THIS IS THE PROGRAM THAT SHOULD NOT BE RAN. THE ONE
- *       TO RUN IS IN THE "program_a" folder.
+ * @note THIS IS THE PROCESS THAT SHOULD NOT BE RAN. THE ONE
+ *       TO RUN IS IN THE "process_a/build" folder after building it.
  * 
  * @return N/A
  */
+
 int main(){
     // Connect to Shared Memory started by "program_a"
     int memory = shm_open(SHM_NAME, O_CREAT | O_RDWR, 0666);
     ftruncate(memory, SHM_SIZE);
-    float * memory_ptr = mmap(0, SHM_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, memory, 0);
+    int * memory_ptr = mmap(0, SHM_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, memory, 0);
     if(memory_ptr == MAP_FAILED){
         perror("I fell! \n");
         exit(1);
     }
+
     // Makes the global variable point to the shared memory,
     // allowing the handle functions to work with the memory.
+    // Link the semaphores as well.
     MEMORY_PTR = memory_ptr;
+    sem_t *sem1 = sem_open(SEMNAME_1, 0);
+    sem_t *sem2 = sem_open(SEMNAME_2, 0);
 
-    // Handler function setups for different signals
-    struct sigaction sa;
-    sa.sa_handler = handle_new;
-    sigaction(SIGUSR1, &sa, NULL);
-
-    struct sigaction sa1;
-    sa1.sa_handler = handle_delete;
-    sigaction(SIGUSR2, &sa1, NULL);
-
-    struct sigaction sa2;
-    sa2.sa_handler = handle_divide;
-    sigaction(SIGALRM, &sa2, NULL);
-
-    struct sigaction sa3;
-    sa3.sa_handler = handle_stop;
-    sigaction(SIGINT, &sa3, NULL);
-
-    // Make program run indefinitely until
-    // sent a signal to stop
-    while (1) {
-        sleep(1);
+    // This program has subscribed to the memory, we can post the first semaphore in program a
+    printf("Program B subscribed to SHM, with code %d from semaphore \n",sem_post(sem1));
+    
+    int iterations = 5000;
+    while(iterations!=0){
+        // We have to either wait for the first iteration of 
+        // increments to happen in program A or any subsequent increments.
+        // Hence we make semaphore 2 stall program B.
+        sem_wait(sem2);
+        for(int i = 0; i<200; i++){
+            memory_ptr[i] = memory_ptr[i]+1;
+        }
+        iterations--;
+        // Once program B finishes incrementing, we post
+        // semaphore 1 to make program A continue
+        sem_post(sem1);
     }
+    sem_unlink(sem1);
+    sem_unlink(sem2);
     return 0;
 }

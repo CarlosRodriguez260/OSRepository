@@ -9,32 +9,29 @@
 
 // Global Variables
 #define SHM_NAME "/memory"
-#define SHM_SIZE 1000 * sizeof(float)
+#define SHM_SIZE 200 * sizeof(int)
+#define SEMNAME_1 "/sem1"
+#define SEMNAME_2 "/sem2"
 
 /**
- * @brief Creates a shared memory called "/memory" and forks 
- * another program called "program_b", which receives signals
- * from this program to perform certain actions on the shared memory.
+ * @name Process A
  * 
- * The forked program runs indefinitely until it receives the
- * appropiate signal for stopping. The parent is in charge of
- * sending the signals, and here is what they send per input:
+ * @brief Creates a shared memory of 200 integers, which program B
+ * will subscribe to. Afterwards, we use semaphores between the programs to
+ * increment the values of the memory by 1 in each program, five thousand times.
+ * In other words, the programs will interchangeably increment all values in memory
+ * by one 5000 times, and at the end all values of the memory should be equal to 10000.
  * 
- * Input 1 -> SIGUSR1: Adds a new number to the shared memory.
- *                     Every new number is multiplied by 2.
- * Input 2 -> SIGUSR2: Removes a number from the shared memory.
- * Input 3 -> SIGALRM: Divides all numbers in the shared memory
- *                     by 2.
- * Input 4 -> No signal, just prints values from shared memory
- * Input 5 -> SIGINT: Makes the child program stop while cleaning
- *                    out and unlinking the memory. The parent 
- *                    will stop right after this as well.
+ * @example
+ * - Process A will begin incrementing while B waits, and afterwards Process A will wait 
+ *   for Process B to increment. This will keep happening until both procceses incremented
+ *   the values of the memory by 5000.
  * 
- * @note THIS IS THE PROGRAM THAT SHOULD BE RAN, NOT THE ONE IN
+ * @note THIS IS THE PROCESS THAT SHOULD BE RAN, NOT THE ONE IN
  * "process_b" FOLDER. IF THIS PROGRAM IS RAN WITHOUT THE OTHER
  * ONE BEING BUILT, NO CHANGES WILL HAPPEN TO THE MEMORY.
  * 
- * @note For convenience, the "program_b" program is already pre-built.
+ * @note For convenience, the "process_b" program is already pre-built and located.
  * 
  * @return N/A
  */
@@ -43,11 +40,12 @@ int main(){
     // Create a new shared memory
     int memory = shm_open(SHM_NAME, O_CREAT | O_RDWR, 0666);
     ftruncate(memory, SHM_SIZE);
-    float * memory_ptr = mmap(0, SHM_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, memory, 0);
+    int * memory_ptr = mmap(0, SHM_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, memory, 0);
     if(memory_ptr == MAP_FAILED){
         perror("I fell! \n");
         exit(1);
     }
+    printf("Program A created the shared memory (SHM)\n");
 
     // NOTE: The "process_b" program has to be built in the "/process_b/build" 
     // folder. For convenience, the program is already pre-built,
@@ -60,40 +58,47 @@ int main(){
         exit(0);
     }
     else{
-        printf("Input one of the following: \n");
-        while(1){
-            // 1 = SIGUSR1
-            // 2 = SIGUSR2 
-            // 3 = SIGALRM
-            // 4 = Print Numbers in Shared Memory
-            // 5 = Stop the program
+        sem_unlink(SEMNAME_1);
+        sem_unlink(SEMNAME_2);
+        sem_t *sem1 = sem_open(SEMNAME_1, O_CREAT, 0666, 0);
+        sem_t *sem2 = sem_open(SEMNAME_2, O_CREAT, 0666, 0);
+        // Make semaphore 1 wait for program B to subscribe to shared memory
+        printf("Program A waited for Program B to subscribe to the SMH, with code %d from semaphore \n",sem_wait(sem1));
 
-            //printf("%d \n", pid);
-            int choice = 0;
-            printf("1 = Add number to memory; 2 = Delete number from memory\n3 = Divide all memory numbers by 2; 4 = Print numbers in memory\n5 = Terminate\n");
-            scanf("%d", &choice);
+        // Now that Program B is subscribed to the memory, we start incrementing here
+        int iterations = 5000;
+        while(iterations!=0){
+            for(int i = 0; i<200; i++){
+                memory_ptr[i] = memory_ptr[i]+1;
+            }
+            iterations--;
 
-            if(choice==1){kill(pid, SIGUSR1);}
-            else if(choice==2){kill(pid, SIGUSR2);}
-            else if(choice==3){kill(pid, SIGALRM);}
-            else if(choice==4){
-                printf("Memory: \n");
-                for(int i = 0; i<1000; i++){
-                    if(memory_ptr[i]==0){break;}
-                    printf("%f\n",memory_ptr[i]);
-                }
-            }
-            else if(choice==5){
-                kill(pid, SIGINT);
-                break;
-            }
-            else{
-                printf("Incorrect input...\n");
-                sleep(1);
-            }
-            printf("\n");
+            // Semaphore 2 is making program B stall, so we post it
+            sem_post(sem2);
+            // Now we make semaphore 1 stall program A
+            sem_wait(sem1);
         }
         wait(NULL);
     }
+
+    printf("Here are the values of the array: \n");
+    int size = 0;
+    for(int i = 0; i<200; i++){
+        if(memory_ptr[i]!=10000){
+            printf("Value %d was found at index %d of the memory, which is not 10000. \n", memory_ptr[i], i);
+            exit(1);
+        }
+
+        if(i==199){
+            printf("%d. ", memory_ptr[i]);
+        }
+        else{
+            printf("%d,", memory_ptr[i]);
+        }
+        size++;
+    }
+    printf("There are %d elements in memory. We are done! \n",size);
+    munmap(memory_ptr,SHM_SIZE);
+    shm_unlink(SHM_NAME);
     return 0;
 }

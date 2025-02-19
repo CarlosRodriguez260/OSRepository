@@ -3,6 +3,10 @@
         "mqueue.h": "c",
         "time.h": "c",
         "signal.h": "c",
-        "unistd.h": "c"
+        "unistd.h": "c",
+        "mman.h": "c",
+        "string.h": "c",
+        "semaphore.h": "c",
+        "stdlib.h": "c"
     }
 }
