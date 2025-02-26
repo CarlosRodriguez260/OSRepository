@@ -41,7 +41,7 @@ int main(int argc, char *argArray[]){
     char MQ_NAME[100];
     // Pre-append the backslash to the names
     sprintf(SHM_NAME, "/%s", argArray[1]);
-    sprintf(MQ_NAME, "/%s", argArray[1]);
+    sprintf(MQ_NAME, "/%s", argArray[2]);
 
     pid_t parent = getpid();
     pid_t child1 = -1;
