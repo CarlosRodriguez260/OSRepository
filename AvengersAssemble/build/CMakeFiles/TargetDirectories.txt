@@ -1,0 +1,3 @@
+/home/vmboxuser/Documents/OSRepository/AvengersAssemble/build/CMakeFiles/avengers.dir
+/home/vmboxuser/Documents/OSRepository/AvengersAssemble/build/CMakeFiles/edit_cache.dir
+/home/vmboxuser/Documents/OSRepository/AvengersAssemble/build/CMakeFiles/rebuild_cache.dir

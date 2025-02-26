@@ -1,6 +1,0 @@
-{
-    "files.associations": {
-        "mqueue.h": "c",
-        "time.h": "c"
-    }
-}
