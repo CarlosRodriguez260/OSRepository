@@ -30,15 +30,12 @@ void* opArray(void* param);
  *   the user. Four threads divide the work by covering 250 thousand of the
  *   1 million numbers when filling up.
  * - Function opArray either sums up or multiplies the elements from array 1
- *   and array 2 and stores the results in array 3, or the result array. Similar
- *   to fillArray, four threads are used to divide the work by covering 250 thousand
- *   of the 1 million numbers. Note that if either array 1 or array 2 have not been
- *   initialized with a value different of 0, multiplication will always lead to 0's
- *   in the result array.
+ *  /**
+ * @brief Program that operates on two arrays using threads.
  * 
- * @example If array 1 is filled with value 3.0, and array 2 is filled with value 4.0,
- * then the result of adding each element from array 1 and 2 is 7, hence the result array
- * will be filled with 7's. The multiplication of each element from array 1 and 2 is 12,
+ * @details The program initializes 3 arrays of type double with
+ * 1 million values each. Array 1 and 2 are filled up with values
+ * inputill be filled with 7's. The multiplication of each element from array 1 and 2 is 12,
  * hence the result array will be filled with 12's.
  * 
  * @return N/A
