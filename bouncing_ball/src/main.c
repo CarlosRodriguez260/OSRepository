@@ -12,9 +12,11 @@ typedef struct
 
 #define ENTER_NCURSES 10
 int mode = 0; // Mode 0 = Automatic. Mode 1 = Manual
+int counter_val = 0;
 int row;
 int col;
 void * keyboardInputs();
+void * ballPlotter();
 BallPosition ball_pos;
 
 int main()
@@ -26,27 +28,18 @@ int main()
 
   ball_pos.x = 10;
   ball_pos.y = 20;
-  int counter_val = 0;
   int dx, dy;
   dx = dy = 1;
 
-  pthread_t inputThread, id2;
+  pthread_t inputThread, plotterThread;
   pthread_attr_t attr;
   pthread_attr_init(&attr);
 
   pthread_create(&inputThread,&attr,keyboardInputs,NULL);
+  pthread_create(&plotterThread,&attr,ballPlotter,NULL);
 
   while (1)
   {
-    clear();
-    getmaxyx(stdscr, row, col); /* Obtiene el numbero de filas y columnas */
-    char str[20];
-    mvprintw(0, 0, "%d", counter_val++);
-    sprintf(str,"%d",ball_pos.y);
-    mvprintw(ball_pos.y, ball_pos.x, str);
-    refresh();
-
-    
     if(mode==0){
       ball_pos.x += dx;
       ball_pos.y += dy;
@@ -68,7 +61,7 @@ int main()
       }
     }
     else if(mode==1){
-
+      //
     }
 
     usleep(100000); /* Duerme por 100ms */
@@ -81,7 +74,6 @@ int main()
 }
 
 void * keyboardInputs(){
-  //kill(getpid(),SIGTERM);
   nodelay(stdscr, TRUE);
   int key_stroke;
   bool break_loop = false;
@@ -131,7 +123,32 @@ void * keyboardInputs(){
         mode = 0;
       }
       break;
+    case KEY_BACKSPACE:
+      /* code */
+      kill(getpid(),SIGTERM);
     }
-    usleep(10000); // Small delay to avoid high CPU usage
+    usleep(100000); // Small delay to avoid high CPU usage
+  }
+}
+
+void * ballPlotter(){
+  while(1){
+    clear();
+    getmaxyx(stdscr, row, col); /* Obtiene el numbero de filas y columnas */
+    char pos_y[20];
+    char mode_name[20];
+
+    if(mode==0){
+      sprintf(mode_name,"%s","Automatic");
+    }
+    else{
+      sprintf(mode_name,"%s","Manual");
+    }
+    sprintf(pos_y,"%d",ball_pos.y);
+    mvprintw(0, 0, "%d", counter_val++);
+    mvprintw(1, 0, "%s", mode_name);
+    mvprintw(ball_pos.y, ball_pos.x, pos_y);
+    refresh();
+    usleep(100000);
   }
 }
