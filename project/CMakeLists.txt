@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(bouncing_ball)
+project(lab3exercise2)
 
 include_directories(include)
 
