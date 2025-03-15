@@ -30,6 +30,7 @@ void * plotter();
 void * collisioner();
 BallPosition ball_pos;
 int matrix[15][25];
+int stuck_counter = 0;
 sem_t * sem1;
 
 int main()
@@ -40,24 +41,29 @@ int main()
   printf("Select a difficulty:\n1. Low\n2. Medium\n3. High\n");
   scanf("%d",&difficulty);
 
-  int max_twos = (299 * (25 * difficulty)) / 100;
   for(int i = 0; i<15; i++){
     for(int j = 0; j<25; j++){
       if(i==0 || i==14 || j == 0 || j == 24){
         matrix[i][j]=1;
-        continue;
-      }
-
-      int random = rand();
-      if(random%2==0 && random%3==0 && max_twos>=1 && i!=1 && j!=1){
-        matrix[i][j]=2;
-        max_twos--;
       }
       else{
         matrix[i][j]=0;
       }
-
     }
+  }
+
+  int max_twos = (299 * (25 * difficulty)) / 100;
+  while(max_twos>0){
+    int i = rand() % (13 - 1 + 1) + 1;  // Row between 1 and 13
+    int j = rand() % (23 - 1 + 1) + 1;  // Column between 1 and 23
+
+    if((i==1 && j==1) || (i==2 && j==1) || (i==1 && j==2) || (i==2 && j==2) || matrix[i][j]==2){
+      continue;
+    }
+    else{
+      matrix[i][j]=2;
+    }
+    max_twos--;
   }
 
   initscr();
@@ -85,6 +91,7 @@ int main()
 void * plotter(){
   while(1){
     clear();
+    bool found_two = false;
     for(int i = 0; i<15; i++){
       for(int j = 0; j<25; j++){
         if(matrix[i][j]==0){
@@ -95,18 +102,23 @@ void * plotter(){
         }
         else if(matrix[i][j]==2){
           mvprintw(i,j,"#");
+          found_two = true;
         }
       }
     }
+
+    if(!found_two){
+      clear();
+      refresh();
+      kill(getpid(),SIGKILL);
+    }
+
     mvprintw(ball_pos.y,ball_pos.x,"o");
-    char pos_y[20];
-    char pos_x[20];
-    sprintf(pos_y,"%d",ball_pos.y);
-    sprintf(pos_x,"%d",ball_pos.x);
-    mvprintw(0,27,pos_y);
-    mvprintw(0,30,pos_x);
+    char stuck_counter_reader[20];
+    sprintf(stuck_counter_reader,"%d",stuck_counter);
+    mvprintw(0,27,stuck_counter_reader);
     refresh();
-    usleep(100000);
+    usleep(10000);
   }
 }
 
@@ -117,20 +129,18 @@ void * ballMover(){
       sem_wait(sem1);
       ball_pos.x += dx;
       ball_pos.y += dy;
-      sem_post(sem1);
     }
-    usleep(100000); /* Duerme por 100ms */
+    usleep(10000); 
   }
 }
 
 void * collisioner() {
   while (1) {
-    sem_wait(sem1);  // Lock the semaphore before modifying ball position
-
+    stuck_counter++;
     int future_x = ball_pos.x + dx;
     int future_y = ball_pos.y + dy;
 
-     // === PREVENT OUT-OF-BOUNDS MOVEMENT ===
+     // Prevent out of bounds movement
      if (future_x <= 0 || future_x >= 24) {  // Left or right wall
       dx = -dx;
       future_x = ball_pos.x;  // Stay in place
@@ -143,13 +153,14 @@ void * collisioner() {
     // Collision checks
 
     // 1. Check for direct diagonal collision
-    if (matrix[future_y][future_x] == 1) {  // Wall
+    if (matrix[future_y][future_x] == 1) { 
       dx = -dx;
       dy = -dy;
-    } else if (matrix[future_y][future_x] == 2) {  // Obstacle
+    } else if (matrix[future_y][future_x] == 2) {  
       dx = -dx;
       dy = -dy;
-      matrix[future_y][future_x] = 0;  // Remove obstacle
+      matrix[future_y][future_x] = 0; 
+      stuck_counter = 0;
     }
 
     // 2. Check for vertical collision (above or below)
@@ -158,6 +169,7 @@ void * collisioner() {
     } else if (matrix[future_y][ball_pos.x] == 2) {
       dy = -dy;
       matrix[future_y][ball_pos.x] = 0;
+      stuck_counter = 0;
     }
 
     // 3. Check for horizontal collision (left or right)
@@ -166,9 +178,14 @@ void * collisioner() {
     } else if (matrix[ball_pos.y][future_x] == 2) {
       dx = -dx;
       matrix[ball_pos.y][future_x] = 0;
+      stuck_counter = 0;
     }
 
-    sem_post(sem1);  // Unlock semaphore
-    usleep(100000);  // Sleep 100ms
+    if(stuck_counter>=7500){
+      dy = -dy;
+      stuck_counter = 0;
+    }
+    sem_post(sem1);
+    usleep(1000);  // Calculate collisions fast
   }
 }
