@@ -118,7 +118,7 @@ void * plotter(){
     sprintf(stuck_counter_reader,"%d",stuck_counter);
     mvprintw(0,27,stuck_counter_reader);
     refresh();
-    usleep(10000);
+    usleep(100000);
   }
 }
 
@@ -130,7 +130,7 @@ void * ballMover(){
       ball_pos.x += dx;
       ball_pos.y += dy;
     }
-    usleep(10000); 
+    usleep(100000); 
   }
 }
 
@@ -151,33 +151,33 @@ void * collisioner() {
     }
 
     // Collision checks
-
-    // 1. Check for direct diagonal collision
-    if (matrix[future_y][future_x] == 1) { 
+    
+    // 1. Check for horizontal collision (left or right)
+    if (matrix[ball_pos.y][future_x] == 1) {
       dx = -dx;
-      dy = -dy;
-    } else if (matrix[future_y][future_x] == 2) {  
+    } else if (matrix[ball_pos.y][future_x] == 2) {
       dx = -dx;
-      dy = -dy;
-      matrix[future_y][future_x] = 0; 
+      matrix[ball_pos.y][future_x] = 0;
       stuck_counter = 0;
     }
-
+    
     // 2. Check for vertical collision (above or below)
-    else if (matrix[future_y][ball_pos.x] == 1) {
+    if (matrix[future_y][ball_pos.x] == 1) {
       dy = -dy;
     } else if (matrix[future_y][ball_pos.x] == 2) {
       dy = -dy;
       matrix[future_y][ball_pos.x] = 0;
       stuck_counter = 0;
     }
-
-    // 3. Check for horizontal collision (left or right)
-    else if (matrix[ball_pos.y][future_x] == 1) {
+    
+    // 3. Check for direct diagonal collision
+    else if (matrix[future_y][future_x] == 1) { 
       dx = -dx;
-    } else if (matrix[ball_pos.y][future_x] == 2) {
+      dy = -dy;
+    } else if (matrix[future_y][future_x] == 2) {  
       dx = -dx;
-      matrix[ball_pos.y][future_x] = 0;
+      dy = -dy;
+      matrix[future_y][future_x] = 0; 
       stuck_counter = 0;
     }
 
