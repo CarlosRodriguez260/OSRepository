@@ -106,5 +106,13 @@ void * ballMover(){
 }
 
 void * collisioner(){
-  
+  while (1)
+  {
+    int future_x = ball_pos.x += dx;
+    int future_y = ball_pos.y += dy;
+
+    // Check for diagonal collisions
+    // Check for non-diagonal collisions
+    usleep(100000); /* Duerme por 100ms */
+  }
 }
