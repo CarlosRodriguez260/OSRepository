@@ -15,57 +15,56 @@ int mode = 0; // Mode 0 = Automatic. Mode 1 = Manual
 int counter_val = 0;
 int row;
 int col;
-void * keyboardInputs();
-void * ballPlotter();
+int dx, dy;
+int difficulty;
+dx = 1;
+dy = 1;
+void * ballMover();
+void * plotter();
+void * collisioner();
 BallPosition ball_pos;
+int matrix[15][25];
 
 int main()
 {
+  printf("Select a difficulty:\n1. Low\n2. Medium\n3. High\n");
+  scanf("%d",&difficulty);
+
+  int max_twos = (299 * (25 * difficulty)) / 100;
+  for(int i = 0; i<15; i++){
+    for(int j = 0; j<25; j++){
+      if(i==0 || i==14 || j == 0 || j == 24){
+        matrix[i][j]=1;
+        continue;
+      }
+
+      int random = rand();
+      if(random%2==0 && random%3==0 && max_twos>=1 && i!=1 && j!=1){
+        matrix[i][j]=2;
+        max_twos--;
+      }
+      else{
+        matrix[i][j]=0;
+      }
+
+    }
+  }
+
   initscr();
   keypad(stdscr, TRUE);
   noecho();
   curs_set(0);
 
-  ball_pos.x = 10;
-  ball_pos.y = 20;
-  int dx, dy;
-  dx = dy = 1;
+  ball_pos.x = 1;
+  ball_pos.y = 1;
 
-  pthread_t inputThread, plotterThread;
+  pthread_t moverThread, plotterThread,collisionThread;
   pthread_attr_t attr;
   pthread_attr_init(&attr);
 
-  pthread_create(&inputThread,&attr,keyboardInputs,NULL);
-  pthread_create(&plotterThread,&attr,ballPlotter,NULL);
-
-  while (1)
-  {
-    if(mode==0){
-      ball_pos.x += dx;
-      ball_pos.y += dy;
-      if (ball_pos.x >= col - 1)
-      {
-        dx = -1;
-      }
-      if (ball_pos.y >= row - 1)
-      {
-        dy = -1;
-      }
-      if (ball_pos.x <= 1)
-      {
-        dx = 1;
-      }
-      if (ball_pos.y <= 1)
-      {
-        dy = 1;
-      }
-    }
-    else if(mode==1){
-      //
-    }
-
-    usleep(100000); /* Duerme por 100ms */
-  }
+  pthread_create(&plotterThread,&attr,plotter,NULL);
+  pthread_create(&moverThread,&attr,ballMover,NULL);
+  pthread_create(&collisionThread,&attr,collisioner,NULL);
 
   getch();
   endwin();
@@ -73,82 +72,39 @@ int main()
   return 0;
 }
 
-void * keyboardInputs(){
-  nodelay(stdscr, TRUE);
-  int key_stroke;
-  bool break_loop = false;
-  while(!break_loop)
-  {
-    key_stroke = getch();
-    switch (key_stroke)
-    {
-    case KEY_UP:
-      /* code */
-      if(mode==1){
-        if(ball_pos.y>=1){
-          ball_pos.y--;
-        }
-      }
-      break;
-    case KEY_DOWN:
-      /* code */
-      if(mode==1){
-        if(ball_pos.y<row-1){
-          ball_pos.y++;
-        }
-      }
-      break;
-    case KEY_LEFT:
-      /* code */
-      if(mode==1){
-        if(ball_pos.x>=1){
-          ball_pos.x--;
-        }
-      }
-      break;
-    case KEY_RIGHT:
-      /* code */
-      if(mode==1){
-        if(ball_pos.x<col-1){
-          ball_pos.x++;
-        }
-      }
-      break;
-    case 32:
-      //
-      if(mode==0){
-        mode = 1;
-      }
-      else{
-        mode = 0;
-      }
-      break;
-    case KEY_BACKSPACE:
-      /* code */
-      kill(getpid(),SIGTERM);
-    }
-    usleep(100000); // Small delay to avoid high CPU usage
-  }
-}
-
-void * ballPlotter(){
+void * plotter(){
   while(1){
     clear();
-    getmaxyx(stdscr, row, col); /* Obtiene el numbero de filas y columnas */
-    char pos_y[20];
-    char mode_name[20];
-
-    if(mode==0){
-      sprintf(mode_name,"%s","Automatic");
+    for(int i = 0; i<15; i++){
+      for(int j = 0; j<25; j++){
+        if(matrix[i][j]==0){
+          mvprintw(i,j," ");
+        }
+        else if(matrix[i][j]==1){
+          mvprintw(i,j,"*");
+        }
+        else if(matrix[i][j]==2){
+          mvprintw(i,j,"#");
+        }
+      }
     }
-    else{
-      sprintf(mode_name,"%s","Manual");
-    }
-    sprintf(pos_y,"%d",ball_pos.y);
-    mvprintw(0, 0, "%d", counter_val++);
-    mvprintw(1, 0, "%s", mode_name);
-    mvprintw(ball_pos.y, ball_pos.x, pos_y);
+    mvprintw(ball_pos.y,ball_pos.x,"o");
     refresh();
     usleep(100000);
   }
+}
+
+void * ballMover(){
+  while (1)
+  {
+    if(mode==0){
+      ball_pos.x += dx;
+      ball_pos.y += dy;
+    }
+    usleep(100000); /* Duerme por 100ms */
+  }
+}
+
+void * collisioner(){
+  
 }
