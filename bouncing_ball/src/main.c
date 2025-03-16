@@ -9,6 +9,7 @@
 #include <sys/mman.h>
 #include <unistd.h>
 
+// Global variables
 typedef struct
 {
   int x;
@@ -33,6 +34,21 @@ int matrix[15][25];
 int stuck_counter = 0;
 sem_t * sem1;
 
+/**
+ * @brief A program where a ball bounces against obstacles and destroys them.
+ * 
+ * @details Utilizing ncurses, we have built a program that generates a stage
+ * filled with obstacles, which are destroyed by a moving ball. There are 3 levels
+ * of difficulty, each filling up more and more of the stage with obstacles. Level 1,
+ * or low, only makes obstacles cover 25% of the stage. Level 2, or medium, makes the obstacles
+ * cover 50% of the stage. Level 3, or high, makes the obstacles cover 75% of the screen. 
+ * Starting from the same position, the ball will move around and its objective is to
+ * destroy all the objectives, and once that is done, the program closes automatically.
+ * Threads are utilized to handle the plotting of the ball and stage, as well as the collisions
+ * and movement of the ball.
+ * 
+ * @return N/A
+ */
 int main()
 {
   sem_unlink(SEMNAME_1);
@@ -41,6 +57,7 @@ int main()
   printf("Select a difficulty:\n1. Low\n2. Medium\n3. High\n");
   scanf("%d",&difficulty);
 
+  // Initialize the stage
   for(int i = 0; i<15; i++){
     for(int j = 0; j<25; j++){
       if(i==0 || i==14 || j == 0 || j == 24){
@@ -52,6 +69,7 @@ int main()
     }
   }
 
+  // Fill random parts of the stage with obstacles
   int max_twos = (299 * (25 * difficulty)) / 100;
   while(max_twos>0){
     int i = rand() % (13 - 1 + 1) + 1;  // Row between 1 and 13
@@ -78,13 +96,13 @@ int main()
   pthread_attr_t attr;
   pthread_attr_init(&attr);
 
+  // Launch the threads
   pthread_create(&plotterThread,&attr,plotter,NULL);
   pthread_create(&collisionThread,&attr,collisioner,NULL);
   pthread_create(&moverThread,&attr,ballMover,NULL);
 
   getch();
   endwin();
-
   return 0;
 }
 
@@ -107,6 +125,7 @@ void * plotter(){
       }
     }
 
+    // If no obstacles are present, end the game
     if(!found_two){
       clear();
       refresh();
@@ -127,6 +146,7 @@ void * ballMover(){
   while (1)
   {
     if(mode==0){
+      // Use semaphores to wait for the calculations to be done
       sem_wait(sem1);
       ball_pos.x += dx;
       ball_pos.y += dy;
