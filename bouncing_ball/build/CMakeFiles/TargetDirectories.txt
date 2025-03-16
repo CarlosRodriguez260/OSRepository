@@ -1,3 +1,0 @@
-/home/vmboxuser/Documents/OSRepository/bouncing_ball/build/CMakeFiles/bouncing_ball.dir
-/home/vmboxuser/Documents/OSRepository/bouncing_ball/build/CMakeFiles/edit_cache.dir
-/home/vmboxuser/Documents/OSRepository/bouncing_ball/build/CMakeFiles/rebuild_cache.dir
