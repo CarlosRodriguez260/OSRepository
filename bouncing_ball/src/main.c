@@ -117,6 +117,7 @@ void * plotter(){
     char stuck_counter_reader[20];
     sprintf(stuck_counter_reader,"%d",stuck_counter);
     mvprintw(0,27,stuck_counter_reader);
+    mvprintw(1,27,"Counter reaches 7500, ball changes direction");
     refresh();
     usleep(100000);
   }
