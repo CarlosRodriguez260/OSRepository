@@ -135,7 +135,6 @@ void * ballPlotter(){
   while(1){
     clear();
     getmaxyx(stdscr, row, col); /* Obtiene el numbero de filas y columnas */
-    char pos_y[20];
     char mode_name[20];
 
     if(mode==0){
@@ -144,10 +143,9 @@ void * ballPlotter(){
     else{
       sprintf(mode_name,"%s","Manual");
     }
-    sprintf(pos_y,"%d",ball_pos.y);
     mvprintw(0, 0, "%d", counter_val++);
     mvprintw(1, 0, "%s", mode_name);
-    mvprintw(ball_pos.y, ball_pos.x, pos_y);
+    mvprintw(ball_pos.y, ball_pos.x, "o");
     refresh();
     usleep(100000);
   }
