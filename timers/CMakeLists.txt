@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(ball_game)
+project(timer)
 
 include_directories(include)
 
