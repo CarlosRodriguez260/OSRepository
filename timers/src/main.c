@@ -30,7 +30,6 @@ sem_t* sem1; // Updating coordinate values
 void timerHandler(union sigval sv) { sem_post(sem1); }
 
 int main(){
-
   // Delete the old elapsed_times.log to get a fresh one, if it exists
   if (access("../logs/elapsed_times.log", F_OK) == 0) {  
     remove("../logs/elapsed_times.log");  // Delete the file if it exists
@@ -70,9 +69,6 @@ int main(){
   noecho();
   curs_set(0);
 
-  // Arm the timer
-  timer_settime(timer, 0, &its, NULL);
-
   // Draw the asterisk position with ncurses
   // Semaphore 2 makes sure it happens right after the coordinates are updated
   FILE* file;
@@ -83,6 +79,8 @@ int main(){
     perror("Error trying to open text file");
   }
 
+  // Arm the timer
+  timer_settime(timer, 0, &its, NULL);
   bool stop = false;
   while (!stop) {
     clock_gettime(_POSIX_MONOTONIC_CLOCK, &start_time);

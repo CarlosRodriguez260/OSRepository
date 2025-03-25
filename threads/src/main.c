@@ -18,7 +18,6 @@ void* fileReader();
 void write_elapsed_time(double elapsed_time);
 int x_coord = 0;
 int y_coord = 0;
-
 sem_t* sem2; // Refreshing the screen
 
 /**
@@ -70,7 +69,6 @@ int main() {
 
   getch();
   endwin();
-
   return 0;
 }
 
