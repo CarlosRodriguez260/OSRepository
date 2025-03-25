@@ -6,51 +6,110 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/mman.h>
+#include <sys/stat.h>
 #include <unistd.h>
+#include "header.h"
 
 // Global variables
-typedef struct {
-  int x;
-  int y;
-} BallPosition;
+#define LINE_LENGTH 1024
+#define SEMNAME_2 "/sem2"
+char filename[8192];
+void* fileReader();
+void write_elapsed_time(double elapsed_time);
+int x_coord = 0;
+int y_coord = 0;
 
-#define ENTER_NCURSES 10
-#define SEMNAME_1 \
-  "/sem1"  // Used for preventing race conditions between plotting and collision
-           // calculations
-int mode = 0;
-int counter_val = 0;
-int row;
-int col;
-int dx, dy;
-int difficulty;
-dx = 1;
-dy = 1;
-void* ballMover();    // Function used in thread for moving the ball
-void* plotter();      // Function used in thread to plot the ball and the stage
-void* collisioner();  // Function used in thread to calculate collisions
-BallPosition ball_pos;
-int matrix[15][25];
-int stuck_counter = 0;  // Used to prevent infinite loops
-sem_t* sem1;
+sem_t* sem2; // Refreshing the screen
 
 /**
- * @brief A program where a ball bounces against obstacles and destroys them.
+ * @brief A program where
  *
- * @details Utilizing ncurses, we have built a program that generates a stage
- * filled with obstacles, which are destroyed by a moving ball. There are 3
- * levels of difficulty, each filling up more and more of the stage with
- * obstacles. Level 1, or low, only makes obstacles cover 25% of the stage.
- * Level 2, or medium, makes the obstacles cover 50% of the stage. Level 3, or
- * high, makes the obstacles cover 75% of the screen. Starting from the same
- * position, the ball will move around and its objective is to destroy all the
- * objectives, and once that is done, the program closes automatically. Threads
- * are utilized to handle the plotting of the ball and stage, as well as the
- * collisions and movement of the ball.
+ * @details
  *
  * @return N/A
  */
 
 int main() {
-  timerUpdate(); 
+  // Delete the old elapsed_times.log to get a fresh one, if it exists
+  if (access("../logs/elapsed_times.log", F_OK) == 0) {  
+    remove("../logs/elapsed_times.log");  // Delete the file if it exists
+  }
+  
+  sem2 = sem_open(SEMNAME_2, O_CREAT, 0644, 0);
+
+  int input;
+  printf("Take path 1 or path 2?\n");
+  scanf("%d",&input);
+
+  if(input==1){
+    sprintf(filename, "%s", "../paths/path_1.txt");
+  }
+  else{
+    sprintf(filename, "%s", "../paths/path_2.txt");
+  }
+
+  // Launch the file reader on a thread
+  pthread_t readerThread;
+  pthread_attr_t attr;
+  pthread_attr_init(&attr);
+
+  pthread_create(&readerThread, &attr, fileReader, NULL);
+
+  initscr();
+  noecho();
+  curs_set(0);
+
+  // Draw the asterisk position with ncurses
+  // Semaphore 2 makes sure it happens right after the coordinates are updated
+  while (1) {
+    sem_wait(sem2);
+    erase();
+    mvprintw(y_coord, x_coord, "*");
+    refresh();
+  }
+
+  getch();
+  endwin();
+
+  return 0;
+}
+
+void * fileReader() {
+  FILE* file;
+  char line[LINE_LENGTH];
+
+  file = fopen(filename, "r");
+  if (file == NULL) {
+    perror("Error trying to open text file");
+  }
+
+  struct timespec start_time, end_time;
+  while(1){
+    clock_gettime(_POSIX_MONOTONIC_CLOCK, &start_time);
+    usleep(50000);
+    if(fgets(line, sizeof(line), file)==NULL){
+      break;
+    }
+
+    line[strcspn(line, "\n")] = '\0';
+    sscanf(line, "%d,%d", &x_coord, &y_coord);
+    clock_gettime(_POSIX_MONOTONIC_CLOCK, &end_time);
+    sem_post(sem2);
+
+    double elapsed_time = (end_time.tv_sec - start_time.tv_sec) * 1000.0 +
+                          (end_time.tv_nsec - start_time.tv_nsec) / 1000000.0;
+    write_elapsed_time(elapsed_time);
+  }
+
+  if(file){
+    fclose(file);
+  }
+
+  sem_unlink(SEMNAME_2);
+  FILE *time_file = fopen("../logs/elapsed_times.log", "a");
+  if (time_file) {
+      fclose(time_file);
+  }
+
+  kill(getpid(), SIGINT);
 }

@@ -1,6 +1,6 @@
-#ifndef PROJECT_1
-#define PROJECT_1
+#ifndef UPPERRAND_H
+#define UPPERRAND_H
 
-void threadUpdate();
+void write_elapsed_time(double elapsed_time);
 
-#endif // PROJECT_1
+#endif // UPPERRAND_H

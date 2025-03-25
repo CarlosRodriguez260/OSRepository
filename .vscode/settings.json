@@ -1,6 +1,0 @@
-{
-    "files.associations": {
-        "curses.h": "c",
-        "semaphore.h": "c"
-    }
-}
