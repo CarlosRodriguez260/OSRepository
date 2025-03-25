@@ -9,11 +9,24 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-// Writes the elapsed_time data to the elapsed_times.log file in logs folder
+/**
+ * @brief Writes the elapsed time data to the elapsed_times.log file in the logs folder.
+ * 
+ * This function opens or creates the `elapsed_times.log` file located in the `logs` directory. 
+ * If the file is new, it writes a header line. The elapsed time is written as a float 
+ * value in milliseconds with 3 decimal places, followed by a newline.
+ * The file is updated each time the function is called.
+ *
+ * @param elapsed_time The elapsed time in milliseconds (measured by the program).
+ * 
+ * @note The file is opened in append mode (`a`), so it does not overwrite the previous log data. 
+ * It ensures that data is immediately written to disk by using `fflush`.
+ */
+
 void write_elapsed_time(double elapsed_time) {
     static FILE *time_file = NULL;
     
-    // Open file in(append mode)
+    // Open file, or create it if it doesn't exist
     if (time_file == NULL) {
         time_file = fopen("../logs/elapsed_times.log", "a");
   
