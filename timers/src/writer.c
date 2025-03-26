@@ -21,6 +21,8 @@
  * 
  * @note The file is opened in append mode (`a`), so it does not overwrite the previous log data. 
  * It ensures that data is immediately written to disk by using `fflush`.
+ * 
+ * @return N/A
  */
 
 void write_elapsed_time(double elapsed_time) {

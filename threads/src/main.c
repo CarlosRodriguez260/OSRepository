@@ -21,10 +21,28 @@ int y_coord = 0;
 sem_t* sem1; // Refreshing the screen
 
 /**
- * @brief A program where
- *
- * @details
- *
+ * @brief Program that displays a moving asterisk along a predefined path.
+ * 
+ * @details This program performs the following operations:
+ * 1. Initializes by removing any existing elapsed time log file
+ * 2. Creates and initializes a semaphore for coordinate synchronization
+ * 3. Prompts the user to select which path file to use (path 1 or 2)
+ * 4. Launches a thread which is in charge of reading the file and updating the 
+ *    coordinates of the asterisk. The thread uses usleep(50000) instead of a 
+ *    POSIX timer.
+ * 5. Initializes the ncurses environment for display
+ * 6. Opens and reads the selected path file containing coordinate data
+ * 7. Enters two loops:
+ *    - The loop in main is used for refreshing the ncurses screen. A semaphore is used
+ *      to update the screen once the coordinates are updated in the thread
+ *    - The loop in the thread which reads every line from the file and updates the coordinates
+ * 
+ * The program finishes once:
+ * - All coordinates from the file have been processed
+ * 
+ * @note The source code that writes the data into the log file is found in writer.c 
+ * @warning The program assumes the existence of specific directory structures for logs and paths.
+ * 
  * @return N/A
  */
 

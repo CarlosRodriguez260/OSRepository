@@ -20,10 +20,29 @@ int y_coord = 0;
 sem_t* sem1; // Updating coordinate values
 
 /**
- * @brief A program where
- *
- * @details
- *
+ * @brief Program that displays a moving asterisk along a predefined path.
+ * 
+ * @details This program performs the following operations:
+ * 1. Initializes by removing any existing elapsed time log file
+ * 2. Creates and initializes a semaphore for coordinate synchronization
+ * 3. Prompts the user to select which path file to use (path 1 or 2)
+ * 4. Sets up a periodic timer that triggers every 50ms using POSIX timers
+ * 5. Initializes the ncurses environment for display
+ * 6. Opens and reads the selected path file containing coordinate data
+ * 7. Enters the main loop that:
+ *    - Waits for the timer signal via semaphore
+ *    - Reads the next coordinates from the file
+ *    - Measures the time taken for each update
+ *    - Logs the elapsed time
+ *    - Updates the display with the new asterisk position
+ * 
+ * The program finishes once:
+ * - All coordinates from the file have been processed
+ * 
+ * @note The timer uses SIGEV_THREAD notification which creates a new thread for each timer event.
+ * @note The source code that writes the data into the log file is found in writer.c 
+ * @warning The program assumes the existence of specific directory structures for logs and paths.
+ * 
  * @return N/A
  */
 
