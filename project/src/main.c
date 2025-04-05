@@ -35,7 +35,7 @@
 
 int number_thread = -1;
 bool start = false;
-void* found_thread();
+void* foundFunction();
 typedef struct {
   int id;
   int cpu;
@@ -53,7 +53,7 @@ thread_info_t threads[NUM_THREADS];
  * @param n The number to check.
  * @return true if the number is prime, false otherwise.
  */
-bool is_prime(int n) {
+bool isPrime(int n) {
   if (n < 2) return false;
   for (int i = 2; i * i <= n; ++i)
     if (n % i == 0) return false;
@@ -85,7 +85,7 @@ void* prime_thread_func(void* arg) {
     setpriority(PRIO_PROCESS, 0, info->nice);
 
     int num = rand();
-    if (is_prime(num)) {
+    if (isPrime(num)) {
       // printf("Thread %d (CPU %d, Nice %d) found prime: %d\n", info->id,
       // info->cpu, info->nice, num);
       number_thread = info->id;
@@ -108,7 +108,7 @@ void* prime_thread_func(void* arg) {
  * @return NULL
  */
 
-void* found_thread() {
+void * foundFunction() {
   // If the main program hasn't printed out the menu yet, wait for it
   while (!start) {
     usleep(1000);
@@ -143,7 +143,7 @@ void* found_thread() {
  *
  * @return N/A
  */
-void run_ui() {
+void runUI() {
   initscr();
   noecho();
   cbreak();
@@ -153,7 +153,7 @@ void run_ui() {
   pthread_t foundThread;
   pthread_attr_t attr1;
   pthread_attr_init(&attr1);
-  pthread_create(&foundThread, &attr1, found_thread, NULL);
+  pthread_create(&foundThread, &attr1, foundFunction, NULL);
 
   int selected_thread = 0;
   int choice;
@@ -242,7 +242,7 @@ int main() {
   }
 
   // Start ncurses
-  run_ui();
+  runUI();
 
   return 0;
 }
