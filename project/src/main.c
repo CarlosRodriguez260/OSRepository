@@ -3,31 +3,30 @@
  * @brief A multi-threaded CPU/thread manager with ncurses interface.
  *
  * This program launches 4 threads that continuously generate random numbers
- * and test for primality. Each thread runs on a configurable CPU core and niceness value.
- * An ncurses menu allows the user to dynamically reassign CPUs and niceness
- * values to threads.
+ * and test for primality. Each thread runs on a configurable CPU core and
+ * niceness value. An ncurses menu allows the user to dynamically reassign CPUs
+ * and niceness values to threads.
  *
- * An additional thread also indicates which thread found a prime number most recently.
+ * An additional thread also indicates which thread found a prime number most
+ * recently.
  *
  */
 
 #define _GNU_SOURCE
-#include <stdio.h>
-#include <stdlib.h>
-#include <pthread.h>
-#include <unistd.h>
-#include <sched.h>
-#include <sys/time.h>
-#include <sys/resource.h>
-#include <stdbool.h>
 #include <curses.h> /* ncurses.h incluye stdio.h */
 #include <fcntl.h>
 #include <pthread.h>
+#include <sched.h>
 #include <semaphore.h>
 #include <signal.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/mman.h>
+#include <sys/resource.h>
 #include <sys/stat.h>
+#include <sys/time.h>
 #include <unistd.h>
 
 #define NUM_THREADS 4
@@ -36,13 +35,13 @@
 
 int number_thread = -1;
 bool start = false;
-void * found_thread();
+void* found_thread();
 typedef struct {
-    int id;
-    int cpu;
-    int nice;
-    bool running;
-    pthread_t thread;
+  int id;
+  int cpu;
+  int nice;
+  bool running;
+  pthread_t thread;
 } thread_info_t;
 
 thread_info_t threads[NUM_THREADS];
@@ -55,11 +54,10 @@ thread_info_t threads[NUM_THREADS];
  * @return true if the number is prime, false otherwise.
  */
 bool is_prime(int n) {
-    if (n < 2) return false;
-    for (int i = 2; i*i <= n; ++i)
-        if (n % i == 0)
-            return false;
-    return true;
+  if (n < 2) return false;
+  for (int i = 2; i * i <= n; ++i)
+    if (n % i == 0) return false;
+  return true;
 }
 
 /**
@@ -73,57 +71,58 @@ bool is_prime(int n) {
  * @param arg Pointer to a thread_info_t structure for this thread.
  * @return NULL
  */
-void * prime_thread_func(void * arg) {
-    thread_info_t* info = (thread_info_t*)arg;
+void* prime_thread_func(void* arg) {
+  thread_info_t* info = (thread_info_t*)arg;
 
-    while (1) {
-        // Apply current CPU affinity
-        cpu_set_t cpuset;
-        CPU_ZERO(&cpuset);
-        CPU_SET(info->cpu, &cpuset);
-        pthread_setaffinity_np(pthread_self(), sizeof(cpu_set_t), &cpuset);
+  while (1) {
+    // Apply current CPU affinity
+    cpu_set_t cpuset;
+    CPU_ZERO(&cpuset);
+    CPU_SET(info->cpu, &cpuset);
+    pthread_setaffinity_np(pthread_self(), sizeof(cpu_set_t), &cpuset);
 
-        // Apply current nice value
-        setpriority(PRIO_PROCESS, 0, info->nice);
+    // Apply current nice value
+    setpriority(PRIO_PROCESS, 0, info->nice);
 
-        int num = rand();
-        if (is_prime(num)) {
-            //printf("Thread %d (CPU %d, Nice %d) found prime: %d\n", info->id, info->cpu, info->nice, num);
-            number_thread = info->id;
+    int num = rand();
+    if (is_prime(num)) {
+      // printf("Thread %d (CPU %d, Nice %d) found prime: %d\n", info->id,
+      // info->cpu, info->nice, num);
+      number_thread = info->id;
 
-            fflush(stdout);
-            usleep(100000);
-        }
+      fflush(stdout);
+      usleep(100000);
     }
-    return NULL;
+  }
+  return NULL;
 }
 
 /**
- * @brief Function for helper thread to display which thread last found a prime number.
+ * @brief Function for helper thread to display which thread last found a prime
+ * number.
  *
  * This function runs in a separate thread and updates a specific line
- * in the ncurses menu whenever a new prime number is detected by any of the threads.
+ * in the ncurses menu whenever a new prime number is detected by any of the
+ * threads.
  *
  * @return NULL
  */
 
-void * found_thread() {
-
+void* found_thread() {
   // If the main program hasn't printed out the menu yet, wait for it
-  while(!start){
+  while (!start) {
     usleep(1000);
   }
 
-  while(1){
-
+  while (1) {
     // If the user is typing in something, wait for it
-    while(!start){
+    while (!start) {
       usleep(1000);
     }
 
     char thread_id[20];
     sprintf(thread_id, "%d", number_thread);
-    mvprintw(NUM_THREADS + 2,0,"Found prime in thread %s", thread_id);
+    mvprintw(NUM_THREADS + 2, 0, "Found prime in thread %s", thread_id);
     refresh();
     usleep(100000);
   }
@@ -145,78 +144,81 @@ void * found_thread() {
  * @return N/A
  */
 void run_ui() {
-    initscr();
-    noecho();
-    cbreak();
-    keypad(stdscr, TRUE);
+  initscr();
+  noecho();
+  cbreak();
+  keypad(stdscr, TRUE);
 
-    // Initialize the indicator thread
-    pthread_t foundThread;
-    pthread_attr_t attr1;
-    pthread_attr_init(&attr1);
-    pthread_create(&foundThread, &attr1, found_thread, NULL);
+  // Initialize the indicator thread
+  pthread_t foundThread;
+  pthread_attr_t attr1;
+  pthread_attr_init(&attr1);
+  pthread_create(&foundThread, &attr1, found_thread, NULL);
 
-    int selected_thread = 0;
-    int choice;
-    int max_cpus = sysconf(_SC_NPROCESSORS_ONLN); // Used for getting amount of CPU cores in system
+  int selected_thread = 0;
+  int choice;
+  int max_cpus = sysconf(
+      _SC_NPROCESSORS_ONLN);  // Used for getting amount of CPU cores in system
 
-    while (1) {
-        clear();
-        mvprintw(0, 0, "Thread Manager (Use arrow keys to select, 'c' to change CPU, 'n' to change Niceness, 'q' to quit)");
-        
-        for (int i = 0; i < NUM_THREADS; ++i) {
-            if (i == selected_thread)
-                attron(A_REVERSE);
-            mvprintw(i + 2, 0, "Thread %d - CPU: %d, Nice: %d", i, threads[i].cpu, threads[i].nice);
-            if (i == selected_thread)
-                attroff(A_REVERSE);
-        }
-        refresh();
-        start = true;
+  while (1) {
+    clear();
+    mvprintw(0, 0,
+             "Thread Manager (Use arrow keys to select, 'c' to change CPU, 'n' "
+             "to change Niceness, 'q' to quit)");
 
-        choice = getch();
-
-        switch (choice) {
-            case KEY_UP:
-                selected_thread = (selected_thread - 1 + NUM_THREADS) % NUM_THREADS;
-                break;
-            case KEY_DOWN:
-                selected_thread = (selected_thread + 1) % NUM_THREADS;
-                break;
-            case 'c': {
-                echo();
-                start = false;
-                mvprintw(NUM_THREADS + 4, 0, "Enter new CPU (0-%d): ", max_cpus - 1);
-                int new_cpu;
-                scanw("%d", &new_cpu);
-                if (new_cpu >= 0 && new_cpu < max_cpus) {
-                    threads[selected_thread].cpu = new_cpu;
-                } else {
-                    mvprintw(NUM_THREADS + 5, 0, "Invalid CPU.");
-                }
-                noecho();
-                break;
-            }
-            case 'n': {
-                echo();
-                start = false;
-                mvprintw(NUM_THREADS + 4, 0, "Enter new Niceness (%d to %d): ", NICE_MIN, NICE_MAX);
-                int new_nice;
-                scanw("%d", &new_nice);
-                if (new_nice >= NICE_MIN && new_nice <= NICE_MAX) {
-                    threads[selected_thread].nice = new_nice;
-                } else {
-                    mvprintw(NUM_THREADS + 5, 0, "Invalid Niceness.");
-                }
-                noecho();
-                break;
-            }
-            case 'q':
-                endwin();
-                exit(0);
-        }
-      refresh();
+    for (int i = 0; i < NUM_THREADS; ++i) {
+      if (i == selected_thread) attron(A_REVERSE);
+      mvprintw(i + 2, 0, "Thread %d - CPU: %d, Nice: %d", i, threads[i].cpu,
+               threads[i].nice);
+      if (i == selected_thread) attroff(A_REVERSE);
     }
+    refresh();
+    start = true;
+
+    choice = getch();
+
+    switch (choice) {
+      case KEY_UP:
+        selected_thread = (selected_thread - 1 + NUM_THREADS) % NUM_THREADS;
+        break;
+      case KEY_DOWN:
+        selected_thread = (selected_thread + 1) % NUM_THREADS;
+        break;
+      case 'c': {
+        echo();
+        start = false;
+        mvprintw(NUM_THREADS + 4, 0, "Enter new CPU (0-%d): ", max_cpus - 1);
+        int new_cpu;
+        scanw("%d", &new_cpu);
+        if (new_cpu >= 0 && new_cpu < max_cpus) {
+          threads[selected_thread].cpu = new_cpu;
+        } else {
+          mvprintw(NUM_THREADS + 5, 0, "Invalid CPU.");
+        }
+        noecho();
+        break;
+      }
+      case 'n': {
+        echo();
+        start = false;
+        mvprintw(NUM_THREADS + 4, 0,
+                 "Enter new Niceness (%d to %d): ", NICE_MIN, NICE_MAX);
+        int new_nice;
+        scanw("%d", &new_nice);
+        if (new_nice >= NICE_MIN && new_nice <= NICE_MAX) {
+          threads[selected_thread].nice = new_nice;
+        } else {
+          mvprintw(NUM_THREADS + 5, 0, "Invalid Niceness.");
+        }
+        noecho();
+        break;
+      }
+      case 'q':
+        endwin();
+        exit(0);
+    }
+    refresh();
+  }
 }
 
 /**
@@ -233,10 +235,10 @@ int main() {
 
   // Initialize thread info and start threads
   for (int i = 0; i < NUM_THREADS; ++i) {
-      threads[i].id = i;
-      threads[i].cpu = i % sysconf(_SC_NPROCESSORS_ONLN);
-      threads[i].nice = 0;
-      pthread_create(&threads[i].thread, NULL, prime_thread_func, &threads[i]);
+    threads[i].id = i;
+    threads[i].cpu = i % sysconf(_SC_NPROCESSORS_ONLN);
+    threads[i].nice = 0;
+    pthread_create(&threads[i].thread, NULL, prime_thread_func, &threads[i]);
   }
 
   // Start ncurses
