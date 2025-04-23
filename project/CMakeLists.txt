@@ -5,7 +5,7 @@ set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -DDEBUG")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG -s")
 
 # Set the project name
-project(exam2)
+project(lab5ex1)
 
 # Include the current directory for header files
 include_directories(include)
