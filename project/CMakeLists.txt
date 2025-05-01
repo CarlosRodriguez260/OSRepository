@@ -12,7 +12,8 @@ include_directories(include)
 
 # Add the executable
 add_executable(${CMAKE_PROJECT_NAME} 
-src/main.c)
+src/main.c
+src/csv_creator.c)
 
 # Add any libraries
 # target_link_libraries(pthread)
